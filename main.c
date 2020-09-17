@@ -49,7 +49,7 @@ inline void send_max7219(uint8_t address, uint8_t data) {
 #define TCH_CLOCK 5
     cli(); 
     
-    CS_PORT |= (1 << CS_PIN);
+    CS_PORT &= ~(1 << CS_PIN);
 
     // send something for 7~4th bits of address
     for (int i = 7; i >= 4; i--){
@@ -81,9 +81,9 @@ inline void send_max7219(uint8_t address, uint8_t data) {
         _delay_loop_1(TCH_CLOCK);
         CLK_PORT &= ~(1 << CLK_PIN);
     }
-
-    CS_PORT &= ~(1 << CS_PIN);
-
+    
+    CS_PORT |= (1 << CS_PIN);
+    
     sei();
 }
 
@@ -93,7 +93,7 @@ inline void init_max7219() {
     // scan all digit
     send_max7219(0x0B, 0x07);
 
-    // No decode for digits 7?0
+    // No decode for digits 7~0
     send_max7219(0x09, 0x00);
 
     // set normal(not test) mode
@@ -111,6 +111,8 @@ inline void init_ports() {
     PORTC = 0x00;
     DDRD = 0xFF;
     PORTD = 0x00;
+    
+    CS_PORT |= (1 << CS_PIN);
 }
 
 int main(void)
