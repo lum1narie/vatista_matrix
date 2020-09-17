@@ -22,7 +22,7 @@
 
 #define get_bit(n, bit) (((n) >> (bit)) & 1)
 
-#define F_CPU 8000000UL
+#define F_CPU 1000000UL
 
 /*
  *
@@ -32,7 +32,7 @@
  *  ######
  * ########
  *   #  #
- *     #
+ *   # #
  */
 const uint8_t vatista_pattern[] PROGMEM = {
     0b00000000,
@@ -42,7 +42,7 @@ const uint8_t vatista_pattern[] PROGMEM = {
     0b01111110,
     0b11111111,
     0b00100100,
-    0b00001000
+    0b00101000
 };
 
 inline void send_max7219(uint8_t address, uint8_t data) {
@@ -89,7 +89,7 @@ inline void send_max7219(uint8_t address, uint8_t data) {
 
 inline void init_max7219() {
     // set brightness
-    send_max7219(0x0A, 0x02);
+    send_max7219(0x0A, 0x05);
     // scan all digit
     send_max7219(0x0B, 0x07);
 
@@ -117,7 +117,7 @@ inline void init_ports() {
 
 int main(void)
 {
-    _delay_ms(1500);
+    _delay_ms(100);
     init_ports();
     init_max7219();
 
@@ -134,8 +134,7 @@ int main(void)
 
         send_max7219(address, reverse_row);
     }
-    
-    _delay_ms(1000);
+    _delay_ms(200);
 
     set_sleep_mode(SLEEP_MODE_PWR_SAVE);
     while(1){
