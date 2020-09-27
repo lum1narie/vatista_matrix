@@ -50,9 +50,28 @@ static inline void init_ports() {
   set_bit(CS_PORT, CS_PIN);
 }
 
+static inline void init_clk() {
+  CLKPR = _BV(CLKPCE);
+
+  // prescale system clk by 1/256 (8MHz -> 32KHz)
+  CLKPR = 0x08;
+}
+
+static inline void init_pwr_save() {
+  set_sleep_mode(SLEEP_MODE_PWR_SAVE);
+
+  // disable TWI, TMR0/2, USART, ADC
+  PRR |= (_BV(PRTWI) | _BV(PRTIM0) | _BV(PRTIM2) | _BV(PRUSART0) | _BV(PRADC));
+}
+
 static inline void init_settings() {
   cli();
   init_ports();
+#ifdef ENABLE_POWER_SAVE
+  init_pwr_save();
+  init_clk();
+#endif
+
   _delay_ms(50);
   init_max7219();
   sei();
@@ -64,8 +83,9 @@ int main(void) {
   // send vatista data
   send_reversed_pattern_max7219_P(vatista_display);
 
-  set_sleep_mode(SLEEP_MODE_PWR_SAVE);
   while (1) {
-    sleep_mode();
+#ifdef POWER_SAVE_MODE
+  sleep_mode();
+#endif
   }
 }
