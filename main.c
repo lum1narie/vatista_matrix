@@ -63,7 +63,7 @@ static inline void add_brightness(int8_t diff) {
   // show brightness status
   uint8_t bness_display[8];
   for (int i = 0; i < 8 ; i++) {
-    if ((i & 0x3) == 3) {
+    if (i == 0 || i == 7) {
       bness_display[i] = 0xFF;
     } else if(i <= 3) {
       bness_display[i] = (brightness >= 8 ? (uint8_t)0xFF << ( 15 - brightness) : 0x00);
